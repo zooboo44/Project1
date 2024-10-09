@@ -30,7 +30,7 @@ void removeBeginingSpaces(string &str){
 void removeExcessSpaces(string &str){
     string temp;
     removeBeginingSpaces(str);
-    for(int i = 0; i < str.length() - 1; i++){
+    for(int i = 0; i < str.length(); i++){
         if(str.at(i) == ' ' && str.at(i+1) == ' '){
             
         }
@@ -44,8 +44,10 @@ void removeExcessSpaces(string &str){
 void removeSpaces(ifstream &file, vector<string> &lineVector){
     string line;
     while(getline(file, line)){
-        removeExcessSpaces(line);
-        lineVector.push_back(line);
+        if(line.at(0) != '/' && line.at(1) != '/'){
+            removeExcessSpaces(line);
+            lineVector.push_back(line);
+        }
     }
 }
 
