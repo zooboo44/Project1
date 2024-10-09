@@ -17,25 +17,20 @@ void printFile(ifstream &file){
     }
 }
 
-void trim(string &str){
+void removeBeginingSpaces(string &str){
     string temp;
-    for(int i = str.length() - 1; i > 0; i--){
-        if(str.at(i--) == ' '){
-            
-        }
-        if(str.at(i--) != ' '){
-            for(int j = i; j > 0; j--){
-                
-            }
-            break;
-        }
+    int start = str.find_first_not_of(' ');
+    while(start != str.length()){
+        temp.push_back(str.at(start));
+        start++;
     }
-
+    str = temp;
 }
 
 void removeExcessSpaces(string &str){
     string temp;
-    for(int i = 0; i < str.length(); i++){
+    removeBeginingSpaces(str);
+    for(int i = 0; i < str.length() - 1; i++){
         if(str.at(i) == ' ' && str.at(i+1) == ' '){
             
         }
@@ -46,29 +41,46 @@ void removeExcessSpaces(string &str){
     str = temp;
 }
 
-void removeSpaces(ifstream &file){
+void removeSpaces(ifstream &file, vector<string> &lineVector){
     string line;
     while(getline(file, line)){
-        trim(line);
         removeExcessSpaces(line);
+        lineVector.push_back(line);
+    }
+}
+
+void parseFile(ifstream &file, vector<string> &lineVector){
+    removeSpaces(file, lineVector);
+}
+
+void printLineVector(vector<string> lineVector){
+    for(const string &str: lineVector){
+        cout << str << endl;
     }
 }
 
 int main(){
+
+    //vars and open file
+    vector<string> lineVector;
     ifstream file;
-    file.open("input.cpp");
-    
+    file.open("temp.cpp");
+
+    //print original file
     cout << "original file" << endl;
     printFile(file);
     cout << endl;
     file.clear();
     file.seekg(0);
-    removeSpaces(file);
-    cout << "After modification" << endl;
-    file.clear();
-    file.seekg(0);
-    printFile(file);
 
+    //parse file
+    parseFile(file, lineVector);
+
+    //print after removing spaces
+    cout << "after removing spaces" << endl;
+    printLineVector(lineVector);
+
+    //close file
     file.close();
     
 }
