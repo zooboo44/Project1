@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <map>
 
 using namespace std;
 
@@ -44,14 +45,19 @@ void removeExcessSpaces(string &str){
 void removeSpaces(ifstream &file, vector<string> &lineVector){
     string line;
     while(getline(file, line)){
-        if(line.at(0) != '/' && line.at(1) != '/'){
-            removeExcessSpaces(line);
-            lineVector.push_back(line);
+        if(line.size() != 0){
+            if(line.at(0) != '/' && line.at(1) != '/'){
+                removeExcessSpaces(line);
+                lineVector.push_back(line);
+            }
+        }
+        else{
+            continue;
         }
     }
 }
 
-void parseFile(ifstream &file, vector<string> &lineVector){
+void parseFile(ifstream &file, vector<string> &lineVector, map<string, int> &token){
     removeSpaces(file, lineVector);
 }
 
@@ -65,6 +71,7 @@ int main(){
 
     //vars and open file
     vector<string> lineVector;
+    map<string,int> token;
     ifstream file;
     file.open("temp.cpp");
 
@@ -76,7 +83,7 @@ int main(){
     file.seekg(0);
 
     //parse file
-    parseFile(file, lineVector);
+    parseFile(file, lineVector, token);
 
     //print after removing spaces
     cout << "after removing spaces" << endl;
