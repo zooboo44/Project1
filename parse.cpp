@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <map>
+#include <unordered_set>
 
 using namespace std;
 
@@ -46,7 +47,11 @@ void removeSpaces(ifstream &file, vector<string> &lineVector){
     string line;
     while(getline(file, line)){
         if(line.size() != 0){
-            if(line.at(0) != '/' && line.at(1) != '/'){
+            if(line.size() == 1){
+                removeExcessSpaces(line);
+                lineVector.push_back(line);
+            }
+            else if(line.at(0) != '/' && line.at(1) != '/'){
                 removeExcessSpaces(line);
                 lineVector.push_back(line);
             }
@@ -57,7 +62,7 @@ void removeSpaces(ifstream &file, vector<string> &lineVector){
     }
 }
 
-void parseFile(ifstream &file, vector<string> &lineVector, map<string, int> &token){
+void parseFile(ifstream &file, vector<string> &lineVector){
     removeSpaces(file, lineVector);
 }
 
@@ -71,7 +76,6 @@ int main(){
 
     //vars and open file
     vector<string> lineVector;
-    map<string,int> token;
     ifstream file;
     file.open("temp.cpp");
 
@@ -83,11 +87,13 @@ int main(){
     file.seekg(0);
 
     //parse file
-    parseFile(file, lineVector, token);
+    parseFile(file, lineVector);
 
     //print after removing spaces
     cout << "after removing spaces" << endl;
     printLineVector(lineVector);
+
+    
 
     //close file
     file.close();
