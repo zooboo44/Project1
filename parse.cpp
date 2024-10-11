@@ -218,36 +218,32 @@ int getTotalTokens(){
 }
 
 void tabularize(){
-    cout << "KEYWORDS: " << endl;
+    cout << endl << endl << "----------\n" << "TOKEN TABLE" << endl;
+    cout << "KEYWORDS: " << " ";
     for(const string &str: keywordTokens){
-        cout << str << endl;
+        cout << str << " ";
     }
-    cout << "----------" << endl;
     cout << endl;
-    cout << "OPERATORS:" << endl;
+    cout << "OPERATORS:" << " ";
     for(const string &str: operatorTokens){
-        cout << str << endl;
+        cout << str << " ";
     }
-    cout << "----------" << endl;
     cout << endl;
-    cout << "SEPARATORS: " << endl;
+    cout << "SEPARATORS: " << " ";
     for(const string &str: separatorTokens){
-        cout << str << endl;
+        cout << str << " ";
     }
-    cout << "----------" << endl;
     cout << endl;
-    cout << "LITERALS:" << endl;
+    cout << "LITERALS:" << " ";
     for(const string &str: literalTokens){
-        cout << str << endl;
+        cout << str << " ";
     }
-    cout << "----------" << endl;
     cout << endl;
-    cout << "IDENTIFIERS:" << endl;
+    cout << "IDENTIFIERS:" << " ";
     for(const string &str: identifierTokens){
-        cout << str << endl;
+        cout << str << " ";
     }
-    cout << "----------" << endl;
-    cout << "TOTAL TOKEN COUNT: " << getTotalTokens() << endl;
+    cout << "\nTOTAL TOKEN COUNT: " << getTotalTokens() << endl;
 
 }
 
