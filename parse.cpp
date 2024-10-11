@@ -2,7 +2,6 @@
 #include <string>
 #include <vector>
 #include <fstream>
-#include <map>
 #include <unordered_set>
 
 using namespace std;
@@ -29,11 +28,15 @@ const unordered_set<char> separators = {
     '(', ')', '{', '}', '[', ']', ';', ',', '.', ':'
 };
 
+unordered_set<string> history;
+
 vector<string> keywordTokens;
 vector<string> operatorTokens;
 vector<string> separatorTokens;
 vector<string> literalTokens;
 vector<string> identifierTokens;
+vector<string> commentTokens;
+
 
 void printFile(ifstream &file){
     if(!file.is_open()){
@@ -79,7 +82,10 @@ void removeSpaces(ifstream &file, vector<string> &lineVector){
                 removeExcessSpaces(line);
                 lineVector.push_back(line);
             }
-            else if(line.at(0) != '/' && line.at(1) != '/'){
+            else if(line.at(0) == '/' && line.at(1) == '/'){
+                commentTokens.push_back(line);
+            }
+            else{
                 removeExcessSpaces(line);
                 lineVector.push_back(line);
             }
@@ -134,6 +140,9 @@ void classifyToken(const string &token){
     else if (isIdentifier(token)) {
         identifierTokens.push_back(token);
     }
+    else if(token[0] == '/' && token[1] == '/'){
+        commentTokens.push_back(token);
+    }
     else{
         cout << "ERROR " << token << " IS AN UNKNOWN TOKEN" << endl;
     }
@@ -149,6 +158,21 @@ void tokenize(vector<string> &lineVector){
     for(const string &str : lineVector){
         for(int i = 0; i < str.size(); i++){
             char ch = str.at(i);
+
+            //comment in same line of valid code
+            if(ch == '/' && str.at(i+1) == '/'){
+                token += ch;
+                int j = i + 1;
+                while(j < str.size()){
+                    ch = str.at(j);
+                    token += ch;
+                    j++;
+                }
+                classifyToken(token);
+                token.clear();
+                i = j;
+                continue;
+            }
             
             //Quote literals
             if(ch == '"'){
@@ -214,34 +238,77 @@ int getTotalTokens(){
     sum += separatorTokens.size();
     sum += literalTokens.size();
     sum += identifierTokens.size();
+    sum += commentTokens.size();
     return sum;
 }
 
 void tabularize(){
+    unordered_set<string> history;
     cout << endl << endl << "----------\n" << "TOKEN TABLE" << endl;
     cout << "KEYWORDS: " << " ";
-    for(const string &str: keywordTokens){
-        cout << str << " ";
+    for(const string &str : keywordTokens){
+        if(history.find(str) != history.end()){
+            continue;
+        }
+        else{
+            history.insert(str);
+        }
+        cout << str << ", ";
     }
     cout << endl;
     cout << "OPERATORS:" << " ";
-    for(const string &str: operatorTokens){
-        cout << str << " ";
+    for(const string &str : operatorTokens){
+        if(history.find(str) != history.end()){
+            continue;
+        }
+        else{
+            history.insert(str);
+        }
+        cout << str << ", ";
     }
     cout << endl;
     cout << "SEPARATORS: " << " ";
-    for(const string &str: separatorTokens){
-        cout << str << " ";
+    for(const string &str : separatorTokens){
+        if(history.find(str) != history.end()){
+            continue;
+        }
+        else{
+            history.insert(str);
+        }
+        cout << str << ", ";
     }
     cout << endl;
     cout << "LITERALS:" << " ";
-    for(const string &str: literalTokens){
-        cout << str << " ";
+    for(const string &str : literalTokens){
+        if(history.find(str) != history.end()){
+            continue;
+        }
+        else{
+            history.insert(str);
+        }
+        cout << str << ", ";
     }
     cout << endl;
     cout << "IDENTIFIERS:" << " ";
-    for(const string &str: identifierTokens){
-        cout << str << " ";
+    for(const string &str : identifierTokens){
+        if(history.find(str) != history.end()){
+            continue;
+        }
+        else{
+            history.insert(str);
+        }
+        cout << str << ", ";
+    }
+    cout << endl;
+    cout << "COMMENTS:" << " ";
+    for(const string &str : commentTokens){
+        if(history.find(str) != history.end()){
+            continue;
+        }
+        else{
+            history.insert(str);
+        }
+        cout << str << ", ";
     }
     cout << "\nTOTAL TOKEN COUNT: " << getTotalTokens() << endl;
 
@@ -252,7 +319,7 @@ int main(){
     //vars and open file
     vector<string> lineVector;
     ifstream file;
-    file.open("temp.cpp");
+    file.open("input.cpp");
 
     //print original file
     cout << "ORIGINAL FILE" << endl;
