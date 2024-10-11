@@ -135,7 +135,7 @@ void classifyToken(const string &token){
         identifierTokens.push_back(token);
     }
     else{
-        cout << "ERROR " << token << "IS AN UNKNOWN TOKEN" << endl;
+        cout << "ERROR " << token << " IS AN UNKNOWN TOKEN" << endl;
     }
 }
 
@@ -149,7 +149,8 @@ void tokenize(vector<string> &lineVector){
     for(const string &str : lineVector){
         for(int i = 0; i < str.size(); i++){
             char ch = str.at(i);
-
+            
+            //Quote literals
             if(ch == '"'){
                 token += '"';
                 int j = i + 1;
@@ -206,6 +207,50 @@ void tokenize(vector<string> &lineVector){
     }
 }
 
+int getTotalTokens(){
+    int sum = 0;
+    sum += keywordTokens.size();
+    sum += operatorTokens.size();
+    sum += separatorTokens.size();
+    sum += literalTokens.size();
+    sum += identifierTokens.size();
+    return sum;
+}
+
+void tabularize(){
+    cout << "KEYWORDS: " << endl;
+    for(const string &str: keywordTokens){
+        cout << str << endl;
+    }
+    cout << "----------" << endl;
+    cout << endl;
+    cout << "OPERATORS:" << endl;
+    for(const string &str: operatorTokens){
+        cout << str << endl;
+    }
+    cout << "----------" << endl;
+    cout << endl;
+    cout << "SEPARATORS: " << endl;
+    for(const string &str: separatorTokens){
+        cout << str << endl;
+    }
+    cout << "----------" << endl;
+    cout << endl;
+    cout << "LITERALS:" << endl;
+    for(const string &str: literalTokens){
+        cout << str << endl;
+    }
+    cout << "----------" << endl;
+    cout << endl;
+    cout << "IDENTIFIERS:" << endl;
+    for(const string &str: identifierTokens){
+        cout << str << endl;
+    }
+    cout << "----------" << endl;
+    cout << "TOTAL TOKEN COUNT: " << getTotalTokens() << endl;
+
+}
+
 int main(){
 
     //vars and open file
@@ -214,7 +259,7 @@ int main(){
     file.open("temp.cpp");
 
     //print original file
-    cout << "original file" << endl;
+    cout << "ORIGINAL FILE" << endl;
     printFile(file);
     cout << endl;
     file.clear();
@@ -224,10 +269,14 @@ int main(){
     parseFile(file, lineVector);
 
     //print after removing spaces
-    cout << "after removing spaces" << endl;
+    cout << "AFTER REMOVING SPACES" << endl;
     printLineVector(lineVector);
+    cout << endl;
 
+    //Process and print
     tokenize(lineVector);
+    tabularize();
+
     //close file
     file.close();
     
